@@ -11,9 +11,8 @@ import {
     useColorModeValue,
   } from '@chakra-ui/react';
   
-  export default function TeamCard() {
+  export default function TeamCard({image,name}) {
     return (
-      <Center py={6}>
         <Box
           maxW={'320px'}
           w={'full'}
@@ -25,28 +24,18 @@ import {
           <Avatar
             size={'xl'}
             src={
-              'https://images.unsplash.com/photo-1520810627419-35e362c5dc07?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ'
+              require(`../assets/${image}`)
             }
             alt={'Avatar Alt'}
             mb={4}
             pos={'relative'}
-            _after={{
-              content: '""',
-              w: 4,
-              h: 4,
-              bg: 'green.300',
-              border: '2px solid white',
-              rounded: 'full',
-              pos: 'absolute',
-              bottom: 0,
-              right: 3,
-            }}
+        
           />
           <Heading fontSize={'2xl'} fontFamily={'body'}>
-            Lindsey James
+            {name}
           </Heading>
           <Text fontWeight={600} color={'gray.500'} mb={4}>
-            @lindsey_jam3s
+            @{name}
           </Text>
           <Text
             textAlign={'center'}
@@ -112,7 +101,6 @@ import {
             </Button>
           </Stack>
         </Box>
-      </Center>
     );
   }
   

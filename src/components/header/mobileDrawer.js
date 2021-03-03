@@ -8,6 +8,7 @@ import { Link } from 'components/link';
 import menuItems from './header.data';
 import Logo from 'components/logo';
 import LogoDark from 'assets/logo.svg';
+import NextLink from 'next/link'
 
 const MobileDrawer = () => {
   const { state, dispatch } = useContext(DrawerContext);
@@ -43,9 +44,11 @@ const MobileDrawer = () => {
           </Box>
 
           <Box sx={styles.menuFooter}>
+            <NextLink href="/signup">
             <Button variant="primary" sx={styles.button}>
              Sign up
             </Button>
+            </NextLink>
           </Box>
         </Box>
       </Scrollbars>

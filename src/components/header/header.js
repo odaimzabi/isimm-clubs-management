@@ -5,7 +5,7 @@ import { IoIosUnlock } from 'react-icons/io';
 import { NavLink, Link } from 'components/link';
 import { Link as ScrollLink, animateScroll as scroll } from 'react-scroll';
 import Logo from 'components/logo';
-
+import NextLink from 'next/link'
 import { DrawerProvider } from 'contexts/drawer/drawer.provider';
 import MobileDrawer from './mobileDrawer';
 import menuItems from './header.data';
@@ -19,6 +19,7 @@ export default function Header({ className }) {
 
           <Flex as="nav" sx={styles.nav}>
             {menuItems.map(({ path, label }, i) => (
+              <NextLink href={path}>
               <Link
                 activeClass="active"
                 sx={styles.nav.navLink}
@@ -31,17 +32,18 @@ export default function Header({ className }) {
               >
                 {label}
               </Link>
+              </NextLink>
             ))}
           </Flex>
-
+            <NextLink href="/signup">
           <Link
-            path="/"
+          path="/"
             ml={2}
             label="Sign up"
             sx={styles.headerBtn}
             variant="buttons.primary"
           />
-
+</NextLink>
           <MobileDrawer />
         </Container>
       </header>

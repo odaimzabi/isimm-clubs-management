@@ -7,13 +7,13 @@ import {
     Stack,
     Collapse,
     Icon,
-    Link,
     Popover,
     PopoverTrigger,
     PopoverContent,
     useColorModeValue,
     useBreakpointValue,
     useDisclosure,
+    Avatar
   } from '@chakra-ui/react';
   import {
     HamburgerIcon,
@@ -21,10 +21,27 @@ import {
     ChevronDownIcon,
     ChevronRightIcon,
   } from '@chakra-ui/icons';
-  
-  export default function NavBar({children}) {
+  import NextLink from 'next/link'
+  import Link from 'next/link'
+  import {useRecoilValue} from 'recoil'
+  import {UserSelector,User} from '../lib/atoms'
+  import { ME } from 'graphql/Queries';
+  import {useQuery} from '@apollo/client'
+  import {useEffect} from 'react'
+  import {useSetRecoilState} from 'recoil'
+   export default function NavBar({children}) {
     const { isOpen, onToggle } = useDisclosure();
-  
+    const user = useRecoilValue(UserSelector);
+    const { loading, error, data } = useQuery(ME);
+    const setUser=useSetRecoilState(UserSelector)
+      useEffect(()=>{
+          if(data){
+              if (!user){
+                setUser(data)
+              }
+          }
+      },[data])
+      console.log(user)
     return (
       <Box>
         <Flex
@@ -68,6 +85,9 @@ import {
             justify={'flex-end'}
             direction={'row'}
             spacing={6}>
+              {!user?(
+                <>
+              <NextLink href="/login">
             <Button
               as={'a'}
               fontSize={'sm'}
@@ -76,6 +96,8 @@ import {
               href={'#'}>
               Sign In
             </Button>
+            </NextLink>
+            <NextLink href="/signup">
             <Button
               display={{ base: 'none', md: 'inline-flex' }}
               fontSize={'sm'}
@@ -87,7 +109,13 @@ import {
                 bg: 'pink.300',
               }}>
               Sign Up
+              
+             
             </Button>
+            </NextLink>
+              </>
+              ):(  <Text>{user.me.username||user.username}</Text>)
+              }
           </Stack>
         </Flex>
   
@@ -106,6 +134,7 @@ import {
           <Box key={navItem.label}>
             <Popover trigger={'hover'} placement={'bottom-start'}>
               <PopoverTrigger>
+                <NextLink href={navItem.href}>
                 <Link
                   p={2}
                   href={navItem.href ?? '#'}
@@ -118,6 +147,7 @@ import {
                   }}>
                   {navItem.label}
                 </Link>
+                </NextLink>
               </PopoverTrigger>
   
               {navItem.children && (
@@ -196,18 +226,20 @@ import {
       <Stack spacing={4} onClick={children && onToggle}>
         <Flex
           py={2}
-          as={Link}
-          href={href ?? '#'}
           justify={'space-between'}
           align={'center'}
           _hover={{
             textDecoration: 'none',
           }}>
+            <NextLink href={href}>
           <Text
             fontWeight={600}
-            color={useColorModeValue('gray.600', 'gray.200')}>
+            color={useColorModeValue('gray.600', 'gray.200')}
+              cursor="pointer"
+            >
             {label}
           </Text>
+          </NextLink>
           {children && (
             <Icon
               as={ChevronDownIcon}
@@ -229,9 +261,11 @@ import {
             align={'start'}>
             {children &&
               children.map((child) => (
-                <Link key={child.label} py={2} href={child.href}>
+                <NextLink href={child.href}>
+                <Link key={child.label} py={2}>
                   {child.label}
                 </Link>
+                </NextLink>
               ))}
           </Stack>
         </Collapse>
@@ -242,43 +276,22 @@ import {
 
   
   const NAV_ITEMS = [
+    
     {
-      label: 'Inspiration',
-      children: [
-        {
-          label: 'Explore Design Work',
-          subLabel: 'Trending Design to inspire you',
-          href: '#',
-        },
-        {
-          label: 'New & Noteworthy',
-          subLabel: 'Up-and-coming Designers',
-          href: '#',
-        },
-      ],
+      label: 'Home',
+      href: '/home',
     },
     {
-      label: 'Find Work',
-      children: [
-        {
-          label: 'Job Board',
-          subLabel: 'Find your dream design job',
-          href: '#',
-        },
-        {
-          label: 'Freelance Projects',
-          subLabel: 'An exclusive list for contract work',
-          href: '#',
-        },
-      ],
+      label: 'Team',
+      href: '/team',
     },
     {
-      label: 'Learn Design',
-      href: '#',
+      label:'Events',
+      href:'/events'
     },
     {
-      label: 'Hire Designers',
-      href: '#',
-    },
+      label:'Blog',
+      href:'/blog'
+    }
   ];
   
