@@ -7,12 +7,16 @@ import {
     Stack,
     Image,
     Grid,
-    ChakraProvider
+    ChakraProvider,
+    Skeleton,
+    useDisclosure,
+    useToast
   } from '@chakra-ui/react';
   import Navbar from '../components/navbar'
   import withApollo from '../utils/apollo-client'
   import { Swiper, SwiperSlide } from 'swiper/react';
   import FavoriteCard from 'components/favorite-card';
+  import {AuthModal} from '../components/auth'
 import fevCardImageOne from 'assets/fev-course-1-1.png';
 import fevCardImageTwo from 'assets/fev-course-1-2.png';
 import fevCardImageThree from 'assets/fev-course-1-3.png';
@@ -22,6 +26,9 @@ import {motion} from 'framer-motion'
 import EventItem from '../components/event-item'
 import {ArrowDownIcon} from '@chakra-ui/icons'
 import Carousel from '../components/carousel'
+import {useQuery} from '@apollo/client'
+import {CLUBS} from '../graphql/Queries'
+import {useState} from 'react'
   // const IMAGE =
   //   'https://images.unsplash.com/photo-1518051870910-a46e30d9db16?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80';
   // const image2="https://scontent-mrs2-1.xx.fbcdn.net/v/t1.0-9/74624070_2611387025574369_2560075562416603136_o.png?_nc_cat=104&ccb=3&_nc_sid=09cbfe&_nc_ohc=YfMd226QcwIAX_tm7jS&_nc_ht=scontent-mrs2-1.xx&oh=c2e030251cec030074255045055d36c3&oe=605D02A9"
@@ -123,6 +130,10 @@ const stagger = {
     
 
   function Home() {
+    const {loading,error,data}=useQuery(CLUBS,{variables:{limit:5}})
+
+    const [isOpen,setOpen]=useState(false)
+  
     return (
 
       <ChakraProvider  theme={theme}>
@@ -131,7 +142,7 @@ const stagger = {
         <Carousel/>
         <Box mt={10}>
         <Box mb={4}>
-          <Heading size="lg" mb={2} ml="0.5rem">
+          <Heading size="lg" mb={2} ml="0.5rem" color="white">
             Our Clubs <ArrowDownIcon/>
           </Heading>
         </Box>
@@ -144,21 +155,25 @@ const stagger = {
           mr="0.5rem"
         >     
         
-        {Array(5).fill("").map((_,i)=>(
-            <motion.div  variants={fadeInUp}
+        { data?.clubs ? data.clubs.map((_,i)=>(
            
            
-            >   
-            <CustomCard image="" portrait={true}/>
-           </motion.div>
+            <CustomCard image="" portrait={true} key={i}/>
         ))
       
-    }
+    :(
+      <>
+    <Skeleton h="25vh" bg="white"/>
+    <Skeleton h="25vh" bg="white"/>
+    <Skeleton h="25vh" bg="white"/>
+    <Skeleton h="25vh"bg="white"/>
+    </>
+    )}
            
           </Grid>
           
           <Box mb={4}>
-          <Heading size="lg" mb={2} ml={"0.5rem"}>
+          <Heading size="lg" mb={2} ml={"0.5rem"} color="white">
             Upcoming Events <ArrowDownIcon/>
           </Heading>
         </Box>

@@ -6,7 +6,7 @@ export const theme = extendTheme({
         body: {
           // bg: '#FAFAFC',
           color: 'black.900',
-          bgGradient:"linear(to-r,gray.300,yellow.400,pink.200) "
+          bgGradient:"linear(to left, #0f2027, #203a43, #2c5364)"
         }
       }
     },

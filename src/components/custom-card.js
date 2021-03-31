@@ -1,10 +1,28 @@
-import { Box, Image, Link, Text, Icon,Button } from "@chakra-ui/react"
+import { Box, Image, Link, Text, Icon,Button,useToast,useDisclosure } from "@chakra-ui/react"
 import NextLink from "next/link"
-
+import {AuthModal} from './auth'
+import {useState} from 'react'
 const colors = ['red.100', 'orange.100', 'green.100', 'teal.100', 'blue.100', 'purple.100', 'pink.100']
 const color = colors[Math.floor(Math.random() * colors.length)];
 
-export default function CustomCard({ googlePull, image, portrait, children, ...rest }){
+export default function CustomCard({ googlePull, image, portrait, children,event, ...rest }){
+
+  const {  onOpen,isOpen,onClose } = useDisclosure();
+  const toast=useToast()
+  const [loading,setLoading]=useState(false)
+  const onSignup = (creds) => {
+     setLoading(true);
+     signup(creds).catch((error) => {
+         setLoading(false);
+         toast({
+             title: 'An error occurred',
+             description: error.message,
+             status: 'error',
+             duration: 5000,
+             isClosable: true
+         });
+     });
+ };
 
 
     return (
@@ -54,7 +72,7 @@ export default function CustomCard({ googlePull, image, portrait, children, ...r
           MTC ISIMM
         </Text>
       
-      <NextLink href={`/book/${image}`} passHref>
+      {/* <NextLink href={`/book/${image}`} passHref> */}
       <Button
           id="login"
           type="submit"
@@ -69,10 +87,13 @@ export default function CustomCard({ googlePull, image, portrait, children, ...r
             bg: 'gray.800',
             transform: 'scale(0.95)'
           }}
+          onClick={onOpen}
         >
-          View Details
+          {event?'View Events':'View Details'}
         </Button>
-      </NextLink>
+      <AuthModal isOpen={isOpen} onClose={onClose} type="Sign Up" loading={loading} onSubmit={onSignup}/>
+
+      {/* </NextLink> */}
 
 
       {children}

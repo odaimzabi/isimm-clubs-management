@@ -10,7 +10,7 @@ import {
     Button,
     Heading,
     Text,
-    ChakraProvider
+    ChakraProvider,
   } from '@chakra-ui/react';
   import withApollo from '../utils/apollo-client'
   import {useMutation} from '@apollo/client'

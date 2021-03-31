@@ -13,7 +13,12 @@ import {
     useColorModeValue,
     useBreakpointValue,
     useDisclosure,
-    Avatar
+    Avatar,
+    Drawer,
+    DrawerOverlay,
+    DrawerHeader,
+    DrawerContent,
+    DrawerBody
   } from '@chakra-ui/react';
   import {
     HamburgerIcon,
@@ -29,11 +34,22 @@ import {
   import {useQuery} from '@apollo/client'
   import {useEffect} from 'react'
   import {useSetRecoilState} from 'recoil'
+  import { useRef } from "react";
+import { motion, useCycle } from "framer-motion";
+import {CgAlbum} from "react-icons/cg"
+import {AiOutlineHome} from 'react-icons/ai'
+import {BsBookmark} from 'react-icons/bs'
+import {Profile} from './profile-modal'
+import SearchBar from './search-bar'
    export default function NavBar({children}) {
-    const { isOpen, onToggle } = useDisclosure();
+    const { isOpen, onToggle,onOpen,onClose } = useDisclosure();
+
     const user = useRecoilValue(UserSelector);
     const { loading, error, data } = useQuery(ME);
     const setUser=useSetRecoilState(UserSelector)
+    const [placement, setPlacement] = React.useState("left")
+  
+
       useEffect(()=>{
           if(data){
               if (!user){
@@ -53,31 +69,66 @@ import {
           borderBottom={1}
           borderStyle={'solid'}
           borderColor={useColorModeValue('gray.200', 'gray.900')}
-          align={'center'}>
+          align={'center'}
+          >
           <Flex
             flex={{ base: 1, md: 'auto' }}
             ml={{ base: -2 }}
-            display={{ base: 'flex', md: 'none' }}>
+            display={{ base: 'flex', md: 'flex' }}
+            >
             <IconButton
               onClick={onToggle}
               icon={
-                isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />
+               <HamburgerIcon w={5} h={5} />
               }
               variant={'ghost'}
               aria-label={'Toggle Navigation'}
             />
           </Flex>
           <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
-            <Text
-              textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
-              fontFamily={'heading'}
-              color={useColorModeValue('gray.800', 'white')}>
-              CIM
-            </Text>
-  
-            <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
-              <DesktopNav />
+            
+          <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
+         
+          <Drawer placement={placement} onClose={onClose} isOpen={isOpen} overflowX="hidden">
+        <DrawerOverlay>
+          <DrawerContent>
+            <DrawerHeader borderBottomWidth="1px">ICM</DrawerHeader>
+            <DrawerBody>
+             
+                <Flex flexDir="column" mt="5rem">
+                 <NextLink href="/home">
+                <Button colorScheme="messenger" variant="ghost" leftIcon={<AiOutlineHome/>} autoFocus={false} mb="1rem">
+                    Home
+                  </Button>
+                  </NextLink> 
+                  <NextLink href="/events">
+                  <Button colorScheme="messenger" variant="ghost" leftIcon={<BsBookmark/>}  mb="1rem">
+                    Events
+                  </Button>
+                  </NextLink>
+                  <NextLink href="/blog">
+                  <Button colorScheme="messenger" variant="ghost" leftIcon={<CgAlbum/>}  mb="1rem">
+                    Blogger
+                  </Button>
+                  </NextLink>
+                 
+                </Flex>
+            </DrawerBody>
+          </DrawerContent>
+        </DrawerOverlay>
+      </Drawer>
             </Flex>
+            <Flex
+            justifyContent="center"
+            alignItems="center"
+            w="5xl"
+            mx={{ base: '0', md: 10 }}
+            ml="4rem"
+          >
+            <SearchBar  />
+          </Flex>
+
+        
           </Flex>
   
           <Stack
@@ -114,14 +165,13 @@ import {
             </Button>
             </NextLink>
               </>
-              ):(  <Text>{user.me.username||user.username}</Text>)
+              ):(  <Profile username={user.me.username||user.username}/>)
               }
           </Stack>
         </Flex>
-  
-        <Collapse in={isOpen} animateOpacity>
+        <Drawer in={isOpen} animateOpacity>
           <MobileNav />
-        </Collapse>
+        </Drawer>
         {children}
       </Box>
     );

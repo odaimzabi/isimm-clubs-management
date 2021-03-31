@@ -8,9 +8,10 @@ import 'typeface-dm-sans';
 import {ChakraProvider} from '@chakra-ui/react'
 import { ApolloProvider,CSSRest } from '@apollo/client';
 import { useApollo } from "../utils/apollo-client";
- 
+import 'tailwindcss/tailwind.css'
 import {RecoilRoot} from 'recoil'
 import '../theme/style.css'
+import 'react-quill/dist/quill.snow.css';
 export default function CustomApp({ Component, pageProps,apollo }) {
   useEffect(() => {
     initGA();

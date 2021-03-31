@@ -13,3 +13,12 @@ export const ME=gql`
 
 
 `
+export const CLUBS=gql`
+
+    query Clubs($limit:Int!){
+        clubs(limit:$limit){
+            Name
+        }
+    }
+
+`
